@@ -2,7 +2,7 @@ import AWS from "aws-sdk";
 import AWSXRay from "aws-xray-sdk-core";
 import { v4 as uuidv4 } from "uuid";
 
-AWSXRay.captureAWS(require("aws-sdk"));
+AWSXRay.captureAWS(AWS);
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.target_table || "Weather";
