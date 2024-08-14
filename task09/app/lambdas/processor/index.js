@@ -7,6 +7,7 @@ AWSXRay.captureAWS(AWS);
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 const tableName = process.env.target_table || "Weather";
+console.log("~~~Table Name from env~~~", tableName);
 
 export const handler = async (event) => {
   const eventId = uuidv4();
@@ -16,33 +17,52 @@ export const handler = async (event) => {
       "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
     );
     console.log("~~~RESPONSE from axios", response);
-    const forecast = response.data;
-    console.log("~~~FORECAST from axios", forecast);
+    const forecastData = response.data;
+    console.log("~~~FORECAST from axios", forecastData);
+
+    console.log("~~~FORECAST latitude", forecastData.latitude);
+    console.log("~~~FORECAST latitude typeof", typeof forecastData.latitude);
+    console.log("~~~FORECAST longitude", forecastData.longitude);
+    console.log("~~~FORECAST longitude typeof", typeof forecastData.longitude);
+    console.log("~~~FORECAST gen_ms", forecastData.generationtime_ms);
+    console.log("~~~FORECAST gen_ms typeof", typeof forecastData.generationtime_ms);
+    console.log("~~~FORECAST utc_of_sec", forecastData.utc_offset_seconds);
+    console.log("~~~FORECAST utc_of_sec typeof", typeof forecastData.utc_offset_seconds);
+    console.log("~~~FORECAST timezone", forecastData.timezone);
+    console.log("~~~FORECAST timezone typeof", typeof forecastData.timezone);
+    console.log("~~~FORECAST timez_abbr", forecastData.timezone_abbreviation);
+    console.log("~~~FORECAST timez_abbr typeof", typeof forecastData.timezone_abbreviation);
+    console.log("~~~FORECAST eevation", forecastData.elevation);
+    console.log("~~~FORECAST eevation typeof", typeof forecastData.elevation);
+    console.log("~~~FORECAST hourly_units", forecastData.hourly_units);
+    console.log("~~~FORECAST hourly_units typeof", typeof forecastData.hourly_units);
+    console.log("~~~FORECAST hourly", forecastData.hourly);
+    console.log("~~~FORECAST hourly typeof", typeof forecastData.hourly);
 
     const item = {
       id: eventId,
       forecast: {
-        elevation: forecast.elevation,
-        generationtime_ms: forecast.generationtime_ms,
-        hourly: {
-          temperature_2m: forecast.hourly.temperature_2m,
-          time: forecast.hourly.time,
-        },
+        latitude: forecastData.latitude,
+        longitude: forecastData.longitude,
+        generationtime_ms: forecastData.generationtime_ms,
+        utc_offset_seconds: forecastData.utc_offset_seconds,
+        timezone: forecastData.timezone,
+        timezone_abbreviation: forecastData.timezone_abbreviation,
+        elevation: forecastData.elevation,
         hourly_units: {
-          temperature_2m: forecast.hourly_units.temperature_2m,
-          time: forecast.hourly_units.time,
+          time: forecastData.hourly_units.time,
+          temperature_2m: forecastData.hourly_units.temperature_2m,
         },
-        latitude: forecast.latitude,
-        longitude: forecast.longitude,
-        timezone: forecast.timezone,
-        timezone_abbreviation: forecast.timezone_abbreviation,
-        utc_offset_seconds: forecast.utc_offset_seconds,
+        hourly: {
+          temperature_2m: forecastData.hourly.temperature_2m,
+          time: forecastData.hourly.time,
+        },
       },
     };
     console.log("~~~ITEM~~~", item);
     console.log("~~~ITEM type~~~", typeof item);
 
-    await docClient
+    const req = await docClient
       .put({
         TableName: tableName,
         Item: item,
