@@ -1,6 +1,7 @@
 import AWS from "aws-sdk";
 import AWSXRay from "aws-xray-sdk-core";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 AWSXRay.captureAWS(AWS);
 
@@ -11,7 +12,6 @@ export const handler = async (event) => {
   const eventId = uuidv4();
 
   try {
-    // Fetch weather forecast
     const response = await axios.get(
       "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
     );
