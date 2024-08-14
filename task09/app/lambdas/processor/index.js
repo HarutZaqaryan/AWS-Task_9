@@ -24,8 +24,14 @@ export const handler = async (event) => {
       forecast: {
         elevation: forecast.elevation,
         generationtime_ms: forecast.generationtime_ms,
-        hourly: forecast.hourly,
-        hourly_units: forecast.hourly_units,
+        hourly: {
+          temperature_2m: forecast.hourly.temperature_2m,
+          time: forecast.hourly.time,
+        },
+        hourly_units: {
+          temperature_2m: forecast.hourly_units.temperature_2m,
+          time: forecast.hourly_units.time,
+        },
         latitude: forecast.latitude,
         longitude: forecast.longitude,
         timezone: forecast.timezone,
@@ -34,7 +40,7 @@ export const handler = async (event) => {
       },
     };
     console.log("~~~ITEM~~~", item);
-
+    console.log("~~~ITEM type~~~", typeof item);
 
     await docClient
       .put({
