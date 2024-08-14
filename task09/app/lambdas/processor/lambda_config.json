@@ -13,9 +13,7 @@
   "env_variables": {
     "target_table": "${target_table}"
   },
-  "tracing_config": {
-    "mode":"Active"
-  },
+  "tracing_mode": "Active",
   "publish_version": false,
   "url_config": {
     "auth_type": "NONE",
